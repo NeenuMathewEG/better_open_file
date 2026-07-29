@@ -1,3 +1,5 @@
+## 3.7.0
+* Preview PDFs with PDFKit on iOS instead of Quick Look
 ## 3.6.5
 * Fixed import path in readme
 * Add namespace to Gradle
