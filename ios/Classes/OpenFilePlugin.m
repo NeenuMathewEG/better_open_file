@@ -1,5 +1,5 @@
 #import "OpenFilePlugin.h"
-#import "better_open_file-Swift.h"
+#import <better_open_file/better_open_file-Swift.h>
 
 @interface OpenFilePlugin ()<UIDocumentInteractionControllerDelegate>
 @end
@@ -55,10 +55,12 @@ static NSString *const CHANNEL_NAME = @"open_file";
                 PdfPreviewViewController *pdfViewController = [[PdfPreviewViewController alloc] initWithFileURL:[NSURL fileURLWithPath:msg]];
                 __weak OpenFilePlugin *weakSelf = self;
                 pdfViewController.onDismiss = ^{
+                    __strong OpenFilePlugin *strongSelf = weakSelf;
+                    if (!strongSelf) return;
                     NSDictionary * dict = @{@"message":@"done", @"type":@0};
                     NSData * jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
                     NSString * json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-                    weakSelf->_result(json);
+                    strongSelf->_result(json);
                 };
                 UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:pdfViewController];
                 [_viewController presentViewController:navController animated:YES completion:nil];

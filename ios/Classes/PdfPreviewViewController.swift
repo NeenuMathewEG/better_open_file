@@ -1,18 +1,18 @@
 import UIKit
 import PDFKit
 
-class PdfPreviewViewController: UIViewController {
+@objcMembers public class PdfPreviewViewController: UIViewController {
     private let pdfView = PDFView()
     private let fileURL: URL
-    var onDismiss: (() -> Void)?
+    public var onDismiss: (() -> Void)?
 
-    init(fileURL: URL) {
+    public init(fileURL: URL) {
         self.fileURL = fileURL
         super.init(nibName: nil, bundle: nil)
     }
-    required init?(coder: NSCoder) { fatalError() }
+    public required init?(coder: NSCoder) { fatalError() }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         guard let document = PDFDocument(url: fileURL) else { return }
 
