@@ -17,48 +17,23 @@ static NSString *const CHANNEL_NAME = @"open_file";
     FlutterMethodChannel* channel = [FlutterMethodChannel
                                      methodChannelWithName:CHANNEL_NAME
                                      binaryMessenger:[registrar messenger]];
-    OpenFilePlugin* instance = [[OpenFilePlugin alloc] init];
+    UIViewController *viewController =
+    [UIApplication sharedApplication].delegate.window.rootViewController;
+    OpenFilePlugin* instance = [[OpenFilePlugin alloc] initWithViewController:viewController];
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
-- (UIViewController *)resolvedPresentingViewController {
-    UIWindow *keyWindow = nil;
-    if (@available(iOS 13.0, *)) {
-        for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
-            if (scene.activationState != UISceneActivationStateForegroundActive) continue;
-            if (![scene isKindOfClass:[UIWindowScene class]]) continue;
-            UIWindowScene *windowScene = (UIWindowScene *)scene;
-            for (UIWindow *window in windowScene.windows) {
-                if (window.isKeyWindow) {
-                    keyWindow = window;
-                    break;
-                }
-            }
-            if (keyWindow) break;
-        }
+- (instancetype)initWithViewController:(UIViewController *)viewController {
+    self = [super init];
+    if (self) {
+        _viewController = viewController;
     }
-    if (!keyWindow) {
-        // Fallback for pre-Scene lifecycle apps (or iOS < 13).
-        keyWindow = [UIApplication sharedApplication].delegate.window;
-    }
-    UIViewController *rootVC = keyWindow.rootViewController;
-    while (rootVC.presentedViewController) {
-        rootVC = rootVC.presentedViewController; // present on top of any existing modal
-    }
-    return rootVC;
+    return self;
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"open_file" isEqualToString:call.method]) {
         _result = result;
-        _viewController = [self resolvedPresentingViewController];
-        if (!_viewController) {
-            NSDictionary *dict = @{@"message":@"no view controller available to present the file", @"type":@-4};
-            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
-            NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-            result(json);
-            return;
-        }
         NSString *msg = call.arguments[@"file_path"];
         if(msg==nil){
             NSDictionary * dict = @{@"message":@"the file path cannot be null", @"type":@-4};
