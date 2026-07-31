@@ -8,6 +8,7 @@ class OpenFile {
   static Future<OpenResult> open(String? filePath,
       {String? type,
       String? uti,
+      String? displayName,
       String linuxDesktopName = "xdg",
       bool linuxByProcess = false}) async {
     final _b = await web.open("file://$filePath");

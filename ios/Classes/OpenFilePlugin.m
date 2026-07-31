@@ -77,7 +77,11 @@ static NSString *const CHANNEL_NAME = @"open_file";
             NSString *ext = [[msg pathExtension] lowercaseString];
             BOOL isPdf = (!isBlank && [uti isEqualToString:@"com.adobe.pdf"]) || [ext isEqualToString:@"pdf"];
             if(isPdf){
-                PdfPreviewViewController *pdfViewController = [[PdfPreviewViewController alloc] initWithFileURL:[NSURL fileURLWithPath:msg]];
+                NSString *displayName = call.arguments[@"display_name"];
+                if ([self isBlankString:displayName]) {
+                    displayName = [msg lastPathComponent];
+                }
+                PdfPreviewViewController *pdfViewController = [[PdfPreviewViewController alloc] initWithFileURL:[NSURL fileURLWithPath:msg] displayName:displayName];
                 __weak OpenFilePlugin *weakSelf = self;
                 pdfViewController.onDismiss = ^{
                     __strong OpenFilePlugin *strongSelf = weakSelf;

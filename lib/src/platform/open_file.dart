@@ -17,6 +17,7 @@ class OpenFile {
   static Future<OpenResult> open(String? filePath,
       {String? type,
       String? uti,
+      String? displayName,
       String linuxDesktopName = "xdg",
       bool linuxByProcess = false}) async {
     assert(filePath != null);
@@ -53,6 +54,7 @@ class OpenFile {
       "file_path": filePath!,
       "type": type,
       "uti": uti,
+      "display_name": displayName,
     };
     final _result = await _channel.invokeMethod('open_file', map);
     final resultMap = json.decode(_result) as Map<String, dynamic>;
